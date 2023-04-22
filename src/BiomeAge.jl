@@ -58,13 +58,16 @@ read_lineages_from_xlsx(filename, sheet="Sheet1",
 		read_lineages_from_table(XLSX.readxlsx(filename)[sheet][:], 
 			rows, name_col, stem_cols, crown_cols)
 
-function add_up_age_distributions(lineages, group=:crown, h=1.0)
+function get_age_distributions(lineages, group=:crown, h=1.0)
 	@assert group in [:crown, :stem]
-	pdfs = Vector[]
+	ages = Vector[]
 	for lineage = lineages
-		push!(pdfs, pdf(smooth(getproperty(lineage, group), h)).(TIMES))
+		push!(ages, pdf(smooth(getproperty(lineage, group), h)).(TIMES))
 	end
-	return sum(pdfs)
+	return ages
 end
+
+add_up_age_distributions(lineages, group=:crown, h=1.0) = 
+	sum(get_age_distributions(lineages, group, h))
 
 end # module BiomeAge
