@@ -7,8 +7,8 @@ using Entropics
 using XLSX
 
 export read_lineages_from_tsv, read_lineages_from_xlsx
-export add_up_age_distributions
-export TIMES
+export get_age_distribution, add_up_age_distributions
+export NOW, OLD, SEP, TIMES
 
 const NOW = 0
 const OLD = 120
@@ -58,16 +58,12 @@ read_lineages_from_xlsx(filename, sheet="Sheet1",
 		read_lineages_from_table(XLSX.readxlsx(filename)[sheet][:], 
 			rows, name_col, stem_cols, crown_cols)
 
-function get_age_distributions(lineages, group=:crown, h=1.0)
+function get_age_distribution(lineage, group=:crown, h=1.0)
 	@assert group in [:crown, :stem]
-	ages = Vector[]
-	for lineage = lineages
-		push!(ages, pdf(smooth(getproperty(lineage, group), h)).(TIMES))
-	end
-	return ages
+	return pdf(smooth(getproperty(lineage, group), h)).(TIMES)
 end
 
 add_up_age_distributions(lineages, group=:crown, h=1.0) = 
-	sum(get_age_distributions(lineages, group, h))
+	sum(get_age_distribution.(lineages, group, h))
 
 end # module BiomeAge
