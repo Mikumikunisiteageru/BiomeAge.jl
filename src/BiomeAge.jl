@@ -5,6 +5,7 @@ module BiomeAge
 using Changepoints
 using DelimitedFiles
 using Entropics
+using Statistics
 using XLSX
 
 export NOW, OLD, SEP, TIMES
@@ -12,6 +13,7 @@ export NOW, OLD, SEP, TIMES
 export read_lineages_from_tsv, read_lineages_from_xlsx
 export get_age_distribution, add_up_age_distributions
 export get_change_points
+export tlcc
 
 const NOW = 0
 const OLD = 120
@@ -78,6 +80,15 @@ function get_change_points(ages; method=:PELT, sigma=1.5)
 		xps, _ = BS(cost_function, length(ages))
 	end
 	return TIMES[xps[2:end]] .+ SEP/2
+end
+
+function tlcc(ts1, ts2, shifts=-100:100)
+	p(s) = max(s, 0) # positive part
+	n(s) = min(s, 0) # negative part
+	@assert (l = length(ts1)) == length(ts2)
+	timelags = shifts .* SEP
+	pearsons = [cor(ts1[1+p(s):l+n(s)], ts2[1-n(s):l-p(s)]) for s = shifts]
+	return timelags, pearsons
 end
 
 end # module BiomeAge
