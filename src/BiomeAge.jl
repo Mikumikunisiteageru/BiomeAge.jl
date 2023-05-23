@@ -14,6 +14,7 @@ export read_lineages_from_tsv, read_lineages_from_xlsx
 export get_age_distribution, add_up_age_distributions
 export get_change_points
 export tlcc
+export get_extremum_points
 
 const NOW = 0
 const OLD = 120
@@ -89,6 +90,17 @@ function tlcc(ts1, ts2, shifts=-100:100)
 	timelags = shifts .* SEP
 	pearsons = [cor(ts1[1+p(s):l+n(s)], ts2[1-n(s):l-p(s)]) for s = shifts]
 	return timelags, pearsons
+end
+
+function get_extremum_points(ts; rtol=0.0)
+	extrema_points = Tuple{Float64, Float64, Char}[]
+	for i = reverse(eachindex(TIMES))[begin+1:end-1]
+		ts[i-1] < ts[i] * (1-rtol) && ts[i] * (1+rtol) > ts[i+1] && 
+			push!(extrema_points, (TIMES[i], ts[i], '^'))
+		ts[i-1] > ts[i] * (1+rtol) && ts[i] * (1-rtol) < ts[i+1] && 
+			push!(extrema_points, (TIMES[i], ts[i], 'v'))
+	end
+	return extrema_points
 end
 
 end # module BiomeAge
