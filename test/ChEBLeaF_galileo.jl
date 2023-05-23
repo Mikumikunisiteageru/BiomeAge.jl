@@ -39,13 +39,32 @@ drawtimescale(ax1, 100, 0, [3, 4]; fontsize=8, texts = Dict(
 try ax2.remove() catch ; end
 ax2 = PyPlot.axes([103/4100, 0.69, 0.83 - 103/4100, 0.24])
 crowns = sum(crown_ages)
-ax2.plot(TIMES, crowns)
-ax2.set_ylim([0, 3])
+xps = get_change_points(crowns)
+ax2.plot(TIMES, crowns, "C0")
+d, u = 0, 3
+ax2.set_ylim([d, u])
+hd1 = hd2 = nothing
+for (l, r) = [(25, 20), (15, 4)]
+	hd1, = ax2.fill([l, l, r, r], [d, u, u, d]; c="#dadcea", lw=0, zorder=-20)
+end
+for xp = xps
+	hd2, = ax2.plot([xp, xp], [d, u], "-.k"; lw=0.8, zorder=-10)
+end
+x = xps[2]
+i = searchsorted(TIMES, x)
+y = 2 \ (crowns[i.start] + crowns[i.stop])
+hd3, = ax2.plot(x, y, "*"; c="C0", ms=12, markerfacecolor="w", linewidth=1.0)
 ax2.tick_params(left=false, labelleft=false, right=true, labelright=true, 
 	bottom=false, labelbottom=false)
 ax2.set_xlim([100, 0])
 ax2.set_ylabel("Crown LAR / Ma\$^{-1}\$", labelpad=7)
+ax2.text(-15, 1.8, "(Lineage Accumulation Rate)";
+	rotation="vertical", ha="center", va="center")
 ax2.yaxis.set_label_position("right")
+ax2.legend([hd1, hd2, hd3], 
+	["Intenser monsoon", "Change point", "Time of origin"]; 
+	loc="lower right", fontsize=8.5, framealpha=0.9, 
+	labelspacing=0.4, handlelength=1.5, handletextpad=0.5)
 
 try ax3.remove() catch ; end
 ax3 = PyPlot.axes([0.17, 0.06, 0.66, 0.62])
