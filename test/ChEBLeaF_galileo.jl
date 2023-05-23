@@ -10,6 +10,7 @@ cd(joinpath(pkgdir(BiomeAge), "test"))
 lineages = read_lineages_from_tsv("ChEBLeaF_db.tsv")
 sort!(lineages, by = lineage -> mean(lineage.crown))
 crown_ages = get_age_distribution.(lineages, :crown, 1.0)
+stem_ages = get_age_distribution.(lineages, :stem, 1.0)
 
 n = length(lineages)
 
@@ -37,10 +38,11 @@ drawtimescale(ax1, 100, 0, [3, 4]; fontsize=8, texts = Dict(
 	"Pliocene" => "P", "Pleistocene" => "P"))
 
 try ax2.remove() catch ; end
+crown_color = "#469825"
 ax2 = PyPlot.axes([103/4100, 0.69, 0.83 - 103/4100, 0.24])
 crowns = sum(crown_ages)
 xps = get_change_points(crowns)
-ax2.plot(TIMES, crowns, "C0")
+ax2.plot(TIMES, crowns; c=crown_color)
 d, u = 0, 3
 ax2.set_ylim([d, u])
 hd1 = hd2 = nothing
@@ -53,7 +55,8 @@ end
 x = xps[2]
 i = searchsorted(TIMES, x)
 y = 2 \ (crowns[i.start] + crowns[i.stop])
-hd3, = ax2.plot(x, y, "*"; c="C0", ms=12, markerfacecolor="w", linewidth=1.0)
+hd3, = ax2.plot(x, y, "*"; 
+	c=crown_color, ms=12, markerfacecolor="w", linewidth=1.0)
 ax2.tick_params(left=false, labelleft=false, right=true, labelright=true, 
 	bottom=false, labelbottom=false)
 ax2.set_xlim([100, 0])
@@ -64,7 +67,7 @@ ax2.yaxis.set_label_position("right")
 ax2.legend([hd1, hd2, hd3], 
 	["Intenser monsoon", "Change point", "Time of origin"]; 
 	loc="lower right", fontsize=8.5, framealpha=0.9, 
-	labelspacing=0.4, handlelength=1.5, handletextpad=0.5)
+	labelspacing=0.4, handlelength=1.5, handletextpad=0.5, borderaxespad=0.7)
 
 try ax3.remove() catch ; end
 ax3 = PyPlot.axes([0.17, 0.06, 0.66, 0.62])
@@ -103,3 +106,38 @@ ax3.set_xlim([SUBOLD, SUBNOW])
 ax3.set_ylim([LOWER, UPPER])
 ax3.set_yticks([])
 ax3.set_xlabel("Time / Ma", labelpad=2)
+
+try ax4.remove() catch ; end
+stem_color = "#a1752c"
+ax4 = PyPlot.axes([0.05, 0.76, 0.42, 0.155])
+stems = sum(stem_ages)
+xps = get_change_points(stems)
+ax4.plot(TIMES, stems; c=stem_color)
+d, u = 0, 2.2
+for xp = xps
+	ax4.plot([xp, xp], [d, u], "-.k"; lw=0.8, zorder=-10)
+end
+x = xps[1]
+i = searchsorted(TIMES, x)
+y = 2 \ (stems[i.start] + stems[i.stop])
+ax4.plot(x, y, "*"; 
+	c=stem_color, ms=8, markerfacecolor="w", linewidth=1.0)
+ax4.set_xlim([120, 0])
+ax4.tick_params(axis="x", pad=2, labelsize=8, length=2)
+ax4.set_xlabel("Time / Ma", fontsize=9, labelpad=3, loc="left")
+ax4.set_ylim([d, u])
+ax4.set_yticks(0:0.5:2.0)
+ax4.tick_params(left=false, labelleft=false, right=true, labelright=true)
+ax4.tick_params(axis="y", pad=2, labelsize=8, length=2)
+ax4.set_ylabel("Stem LAR / Ma\$^{-1}\$", fontsize=9, labelpad=3, loc="top")
+ax4.yaxis.set_label_position("right")
+
+try ax0.remove() catch ; end
+ax0 = PyPlot.axes([0, 0, 1, 1])
+ax0.set_facecolor("none")
+ax0.text(0.083, 0.896, "(a)"; ha="center", va="center", fontsize=10)
+ax0.text(0.605, 0.896, "(b)"; ha="center", va="center", fontsize=10)
+ax0.text(0.539, 0.111, "(c)"; ha="center", va="center", fontsize=10)
+ax0.axis("off")
+
+savefig("ChEBLeaF_galileo_w6in4.pdf")
