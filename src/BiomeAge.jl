@@ -2,13 +2,16 @@
 
 module BiomeAge
 
+using Changepoints
 using DelimitedFiles
 using Entropics
 using XLSX
 
+export NOW, OLD, SEP, TIMES
+
 export read_lineages_from_tsv, read_lineages_from_xlsx
 export get_age_distribution, add_up_age_distributions
-export NOW, OLD, SEP, TIMES
+export get_change_points
 
 const NOW = 0
 const OLD = 120
@@ -65,5 +68,16 @@ end
 
 add_up_age_distributions(lineages, group=:crown, h=1.0) = 
 	sum(get_age_distribution.(lineages, group, h))
+
+function get_change_points(ages; method=:PELT, sigma=1.5)
+	@assert method in [:PELT, :BS]
+	if method == :PELT
+		cost_function = NormalMeanSegment(ages, sigma)
+		xps, _ = PELT(cost_function, length(ages))
+	elseif method == :BS
+		xps, _ = BS(cost_function, length(ages))
+	end
+	return TIMES[xps[2:end]] .+ SEP/2
+end
 
 end # module BiomeAge
