@@ -1,5 +1,6 @@
 # chebleaf/workflow.jl
 
+using BiomeAge
 using Entropics
 using JLD2
 using PyPlot
