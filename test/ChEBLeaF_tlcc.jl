@@ -31,7 +31,7 @@ function drawtlcc(ax, ts1, ts2, c2, c1;
 		ax.plot(x_[i], y_[i], "^k"; ms=6)
 		ax.text(0, 0.2, "Max. at \$\\Delta{t}\$ = $(x_[i]) Ma"; 
 			ha="center", fontsize=8.5)
-		ax.text(0, 0.0, "Corr. \$r\$ = $(@sprintf("%.3f", y_[i]))"; 
+		ax.text(0, 0.0, "Corr. coeff. \$r\$ = $(@sprintf("%.3f", y_[i]))"; 
 			ha="center", fontsize=8.5)
 	else
 		ax.text(0, 0.6, "Low correlation"; ha="center", fontsize=8.5)
@@ -101,10 +101,11 @@ try ax12.remove() catch ; end
 ax12 = PyPlot.axes([x+w+d, y+2h+2s, w, h])
 drawline(ax12, crowns, crown_color, (0, 2.7))
 ax12.tick_params(left=false, labelleft=false, 
-	bottom=false, labelbottom=false, top=true, labeltop=true)
+	bottom=false, labelbottom=false, top=true, labeltop=true, right=true)
 ax12.tick_params("x", pad=0)
 ax12.set_xlabel("Time (Ma)", labelpad=-119)
 ax12.text(56, 2.19, "Crown LAR (Ma\$^{-1}\$)"; c=crown_color, ha="left")
+ax12.set_yticks(0:0.5:2.5)
 
 try ax13.remove() catch ; end
 ax13 = PyPlot.axes([x+2w+2d, y+2h+2s, w, h])
@@ -121,24 +122,24 @@ ax13.text(56, 2.19, "Stem LAR (Ma\$^{-1}\$)"; c=stem_color, ha="left")
 try ax21.remove() catch ; end
 ax21 = PyPlot.axes([x+0w+0d, y+h+s, w, h])
 drawline(ax21, temps, temp_color, (-16.2, 5))
-ax21.tick_params(bottom=false, labelbottom=false)
+ax21.tick_params(labelbottom=false)
 ax21.tick_params("y", pad=2)
 ax21.set_yticks(-15:5:5)
 ax21.text(8, -9, "Negative"; c=temp_color, ha="right")
 ax21.text(9, -11.8, "relative"; c=temp_color, ha="right")
 ax21.text(12, -14.6, "temperature"; c=temp_color, ha="right")
-ax21.text(12, -14.6, " (\$\\!^\\circ\\!\\!\$C)"; c=temp_color, ha="left")
+ax21.text(12, -14.6, " (℃)"; c=temp_color, ha="left") # °C
 
 try ax22.remove() catch ; end
 ax22 = PyPlot.axes([x+w+d+dw, y+h+s, w-dw, h-dh])
 drawtlcc(ax22, crowns, temps, crown_color, temp_color)
-ax22.tick_params(left=false, labelleft=false, bottom=false, labelbottom=false)
+ax22.tick_params(left=false, labelleft=false, labelbottom=false, right=true)
 
 try ax23.remove() catch ; end
 ax23 = PyPlot.axes([x+2w+2d+dw, y+1h+s, w-dw, h-dh])
 drawtlcc(ax23, stems, temps, stem_color, temp_color)
 ax23.tick_params(left=false, labelleft=false, 
-	bottom=false, labelbottom=false, right=true, labelright=true)
+	labelbottom=false, right=true, labelright=true)
 ax23.tick_params("y", pad=2)
 
 try ax31.remove() catch ; end
@@ -152,7 +153,7 @@ ax31.text(26, 0.9, "Precipitation (m/a)"; c=prec_color, ha="center")
 try ax32.remove() catch ; end
 ax32 = PyPlot.axes([x+w+d+dw, y+0h+0s, w-dw, h-dh])
 drawtlcc(ax32, crowns, precs, crown_color, prec_color)
-ax32.tick_params(left=false, labelleft=false)
+ax32.tick_params(left=false, labelleft=false, right=true)
 ax32.tick_params("x", pad=2)
 ax32.set_xlabel("Time lag (Ma)", labelpad=2.5)
 
@@ -163,5 +164,19 @@ ax33.tick_params(left=false, labelleft=false, right=true, labelright=true)
 ax33.tick_params("x", pad=2)
 ax33.set_xlabel("Time lag (Ma)", labelpad=2.5)
 ax33.tick_params("y", pad=2)
+
+try ax0.remove() catch ; end
+ax0 = PyPlot.axes([0, 0, 1, 1])
+ax0.set_facecolor("none")
+ax0.text(0.077, 0.930, "(a)"; ha="center", va="center", fontsize=10)
+ax0.text(0.393, 0.832, "(b)"; ha="center", va="center", fontsize=10)
+ax0.text(0.393+d+w, 0.832, "(c)"; ha="center", va="center", fontsize=10)
+ax0.text(0.393-d-w, 0.592, "(d)"; ha="center", va="center", fontsize=10)
+ax0.text(0.393-d-w, 0.592-s-h, "(e)"; ha="center", va="center", fontsize=10)
+ax0.text(0.393+dw, 0.832-s-h-dh, "(f)"; ha="center", va="center", fontsize=10)
+ax0.text(0.393+dw, 0.832-2s-2h-dh, "(g)"; ha="center", va="center", fontsize=10)
+ax0.text(0.393+d+w+dw, 0.592-dh, "(h)"; ha="center", va="center", fontsize=10)
+ax0.text(0.393+d+w+dw, 0.592-s-h-dh, "(i)"; ha="center", va="center", fontsize=10)
+ax0.axis("off")
 
 savefig("ChEBLeaF_tlcc_w6in4.pdf")

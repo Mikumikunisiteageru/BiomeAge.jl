@@ -27,6 +27,14 @@ end
 close()
 figure(figsize=(6.4, 7.2))
 
+try axb0.remove() catch ; end
+axb0 = PyPlot.axes([0, 0, 1, 1])
+axb0.fill([0.162, 0.016, 0.016, 0.162], [0.671, 0.671, 0.061, 0.061]; lw=0, c=COLOR_LEN, alpha=0.3)
+axb0.fill([0.838, 0.993, 0.993, 0.838], [0.671, 0.671, 0.061, 0.061]; lw=0, c=COLOR_RIN, alpha=0.3)
+axb0.set_xlim(0, 1)
+axb0.set_ylim(0, 1)
+axb0.axis("off")
+
 try ax1.remove() catch ; end
 # ax1 = PyPlot.axes([0.17, 0.94, 0.66, 0.05])
 ax1 = PyPlot.axes([103/4100, 0.94, 0.83 - 103/4100, 0.05])
@@ -60,8 +68,8 @@ hd3, = ax2.plot(x, y, "*";
 ax2.tick_params(left=false, labelleft=false, right=true, labelright=true, 
 	bottom=false, labelbottom=false)
 ax2.set_xlim([100, 0])
-ax2.set_ylabel("Crown LAR / Ma\$^{-1}\$", labelpad=7)
-ax2.text(-15, 1.8, "(Lineage Accumulation Rate)";
+ax2.set_ylabel("Crown LAR (Ma\$^{-1}\$)", labelpad=7)
+ax2.text(-15, 1.8, "Lineage Accumulation Rate";
 	rotation="vertical", ha="center", va="center")
 ax2.yaxis.set_label_position("right")
 ax2.legend([hd1, hd2, hd3], 
@@ -77,7 +85,7 @@ LOWER = ((n+1) >> 1 + 0.9) * STRETCH
 UPPER = -0.5 * STRETCH
 SUBNOW = 0
 SUBOLD = 82
-TEXTSEP = 2
+TEXTSEP = 1.5
 COLOR_LEN = "#FFE211"
 COLOR_RIN = "#FFA500"
 for (i, crown_age) = enumerate(crown_ages)
@@ -105,7 +113,7 @@ end
 ax3.set_xlim([SUBOLD, SUBNOW])
 ax3.set_ylim([LOWER, UPPER])
 ax3.set_yticks([])
-ax3.set_xlabel("Time / Ma", labelpad=2)
+ax3.set_xlabel("Time (Ma)", labelpad=2)
 
 try ax4.remove() catch ; end
 stem_color = "#a1752c"
@@ -120,16 +128,14 @@ end
 x = xps[1]
 i = searchsorted(TIMES, x)
 y = 2 \ (stems[i.start] + stems[i.stop])
-ax4.plot(x, y, "*"; 
-	c=stem_color, ms=8, markerfacecolor="w", linewidth=1.0)
 ax4.set_xlim([120, 0])
 ax4.tick_params(axis="x", pad=2, labelsize=8, length=2)
-ax4.set_xlabel("Time / Ma", fontsize=9, labelpad=3, loc="left")
+ax4.set_xlabel("Time (Ma)", fontsize=9, labelpad=3, loc="left")
 ax4.set_ylim([d, u])
 ax4.set_yticks(0:0.5:2.0)
 ax4.tick_params(left=false, labelleft=false, right=true, labelright=true)
 ax4.tick_params(axis="y", pad=2, labelsize=8, length=2)
-ax4.set_ylabel("Stem LAR / Ma\$^{-1}\$", fontsize=9, labelpad=3, loc="top")
+ax4.set_ylabel("Stem LAR (Ma\$^{-1}\$)", fontsize=9, labelpad=3, loc="top")
 ax4.yaxis.set_label_position("right")
 
 try ax0.remove() catch ; end
@@ -139,5 +145,6 @@ ax0.text(0.083, 0.896, "(a)"; ha="center", va="center", fontsize=10)
 ax0.text(0.605, 0.896, "(b)"; ha="center", va="center", fontsize=10)
 ax0.text(0.539, 0.111, "(c)"; ha="center", va="center", fontsize=10)
 ax0.axis("off")
+ax0.text(0.913, 0.044, "∗: a subclade"; fontsize=8, ha="center")
 
 savefig("ChEBLeaF_galileo_w6in4.pdf")
