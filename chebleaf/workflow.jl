@@ -1,10 +1,10 @@
-# test/workflow.jl
+# chebleaf/workflow.jl
 
 using Entropics
 using JLD2
 using PyPlot
 
-cd(joinpath(pkgdir(BiomeAge), "test"))
+cd(joinpath(pkgdir(BiomeAge), "chebleaf"))
 
 ep = 1e-3
 ms, msi = 14, 6
@@ -225,4 +225,4 @@ ax0.text(0.49, 0.886, "(b)", ha="center", va="center")
 ax0.text(0.49 + 0.317, 0.886, "(c)", ha="center", va="center")
 ax0.text(0.836, 0.278, "(d)", ha="center", va="center")
 
-savefig("workflow_w6in4.pdf")
+savefig("workflow.pdf")

@@ -1,13 +1,13 @@
-# test/ChEBLeaF_galileo.jl
+# chebleaf/galileo.jl
 
 using BiomeAge
 using Entropics
 using GeologicTime
 using PyPlot
 
-cd(joinpath(pkgdir(BiomeAge), "test"))
+cd(joinpath(pkgdir(BiomeAge), "chebleaf"))
 
-lineages = read_lineages_from_tsv("ChEBLeaF_db.tsv")
+lineages = read_lineages_from_tsv("lineages.tsv")
 sort!(lineages, by = lineage -> mean(lineage.crown))
 crown_ages = get_age_distribution.(lineages, :crown, 1.0)
 stem_ages = get_age_distribution.(lineages, :stem, 1.0)
@@ -23,6 +23,9 @@ function print_name(name, ha=:left)
 		error("Wrong `ha` value!")
 	end
 end
+
+COLOR_LEN = "#FFE211"
+COLOR_RIN = "#FFA500"
 
 close()
 figure(figsize=(6.4, 7.2))
@@ -86,8 +89,6 @@ UPPER = -0.5 * STRETCH
 SUBNOW = 0
 SUBOLD = 82
 TEXTSEP = 1.5
-COLOR_LEN = "#FFE211"
-COLOR_RIN = "#FFA500"
 for (i, crown_age) = enumerate(crown_ages)
 	s = findfirst(crown_age .>= EPSILON)
 	t = findlast(crown_age .>= EPSILON)
@@ -147,4 +148,4 @@ ax0.text(0.539, 0.111, "(c)"; ha="center", va="center", fontsize=10)
 ax0.axis("off")
 ax0.text(0.913, 0.044, "∗: a subclade"; fontsize=8, ha="center")
 
-savefig("ChEBLeaF_galileo_w6in4.pdf")
+savefig("galileo.pdf")

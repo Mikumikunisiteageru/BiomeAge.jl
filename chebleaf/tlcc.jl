@@ -1,4 +1,4 @@
-# test/ChEBLeaF_tlcc.jl
+# chebleaf/tlcc.jl
 
 using BiomeAge
 using DelimitedFiles
@@ -6,13 +6,13 @@ using GeologicTime
 using Printf
 using PyPlot
 
-cd(joinpath(pkgdir(BiomeAge), "test"))
+cd(joinpath(pkgdir(BiomeAge), "chebleaf"))
 
-paleoenv = readdlm("paleoenv.tsv", '\t')
-times, temps, precs, elevs, elevs2 = collect.(eachcol(paleoenv))
+environments = readdlm("environments.tsv", '\t')
+times, temps, precs, _, _ = collect.(eachcol(environments))
 n = only(findall(isapprox.(maximum(times), TIMES)))
 
-lineages = read_lineages_from_tsv("ChEBLeaF_db.tsv")
+lineages = read_lineages_from_tsv("lineages.tsv")
 crowns = add_up_age_distributions(lineages, :crown, 1.0)[1:n]
 stems = add_up_age_distributions(lineages, :stem, 1.0)[1:n]
 
@@ -67,7 +67,7 @@ function drawline(ax, ts, c, ylim_; alpha=0.05)
 		start = min(60, getstart(gt))
 		stop = getstop(gt)
 		color = getcolor(gt)
-		fill([start, stop, stop, start], [y0, y0, y1, y1]; 
+		ax.fill([start, stop, stop, start], [y0, y0, y1, y1]; 
 			c=color, zorder=-10, lw=0, alpha=alpha)
 	end
 end
@@ -93,7 +93,7 @@ figure(figsize=(W, H))
 try ax11.remove() catch ; end
 ax11 = PyPlot.axes([x-0.03, y+2h+2s+dh, w-dw+0.03, h-dh+0.04])
 # 1.904 in * 1.395 in
-ax11.imshow(imread("ChEBLeaF_600.jpg"))
+ax11.imshow(imread("physiognomy.jpg"))
 ax11.tick_params(left=false, labelleft=false, 
 	bottom=false, labelbottom=false)
 
@@ -179,4 +179,4 @@ ax0.text(0.393+d+w+dw, 0.592-dh, "(h)"; ha="center", va="center", fontsize=10)
 ax0.text(0.393+d+w+dw, 0.592-s-h-dh, "(i)"; ha="center", va="center", fontsize=10)
 ax0.axis("off")
 
-savefig("ChEBLeaF_tlcc_w6in4.pdf")
+savefig("tlcc.pdf")
