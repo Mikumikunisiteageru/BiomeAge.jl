@@ -13,16 +13,12 @@ crowns = add_up_age_distributions(lineages, :crown, 1.0)
 stems = add_up_age_distributions(lineages, :stem, 1.0)
 
 function read_lineages_from_tsv_uniform(filename; 
-		name_col=1, stem_cols=2:7, crown_cols=8:13)
+		name_col=1, stem_cols=2:6, crown_cols=7:11)
 	table, _ = readdlm(filename, '\t', header=true)
-	for (wj, mj, uj, sj, aj, bj) = [stem_cols, crown_cols]
+	for (wj, mj, uj, aj, bj) = [stem_cols, crown_cols]
 		for i = axes(table, 1)
-			if ! isa(table[i, aj], Number) || ! isa(table[i, bj], Number)
-				@assert isa(table[i, uj], Number) && isa(table[i, sj], Number)
-				table[i, aj] = max(table[i, uj] - table[i, sj] * 2, NOW)
-				table[i, bj] = min(table[i, uj] + table[i, sj] * 2, OLD)
-			end
-			table[i, [wj, mj, uj, sj]] .= ""
+			@assert isa(table[i, aj], Number) && isa(table[i, bj], Number)
+			table[i, [wj, mj, uj]] .= ""
 		end
 	end
 	return BiomeAge.read_lineages_from_table(table, 

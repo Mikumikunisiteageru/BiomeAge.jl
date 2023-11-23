@@ -39,7 +39,6 @@ axb0.set_ylim(0, 1)
 axb0.axis("off")
 
 try ax1.remove() catch ; end
-# ax1 = PyPlot.axes([0.17, 0.94, 0.66, 0.05])
 ax1 = PyPlot.axes([103/4100, 0.94, 0.83 - 103/4100, 0.05])
 drawtimescale(ax1, 100, 0, [3, 4]; fontsize=8, texts = Dict(
 	"Cretaceous" => "Cretaceous", "Paleogene" => "Paleogene", 

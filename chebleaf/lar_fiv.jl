@@ -9,8 +9,8 @@ using PyPlot
 cd(joinpath(pkgdir(BiomeAge), "chebleaf"))
 
 table, _ = readdlm("lineages_more.tsv", '\t', header=true)
-fiv = data[:, 14]
-lineages = BiomeAge.read_lineages_from_table(table, axes(table, 1), 1, 2:7, 8:13)
+fiv = table[:, 12]
+lineages = BiomeAge.read_lineages_from_table(table, axes(table, 1), 1, 2:6, 7:11)
 
 count_by_fiv(fiv_thres=0.2) = count(fiv .>= fiv_thres)
 get_scaled_lar_by_fiv(fiv_thres=0.2, group=:crown, h=1.0) = 
