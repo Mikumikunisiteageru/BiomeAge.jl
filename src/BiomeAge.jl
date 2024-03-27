@@ -8,18 +8,26 @@ using Entropics
 using Statistics
 using XLSX
 
-export NOW, OLD, SEP, TIMES
-
 export read_lineages_from_tsv, read_lineages_from_xlsx
 export get_age_distribution, add_up_age_distributions
 export get_change_points
 export tlcc
 export get_extremum_points
 
-const NOW = 0
-const OLD = 120
-const SEP = 0.1
-const TIMES = NOW : SEP : OLD
+export get_now, get_old, get_sep, get_times
+# export set_now, set_old, set_sep
+
+NOW::Float64 = 0
+OLD::Float64 = 120
+SEP::Float64 = 0.1
+get_now() = NOW
+get_old() = OLD
+get_sep() = SEP
+get_times() = NOW : SEP : OLD
+get_times(id) = get_times()[id]
+set_now(now) = (global NOW = now)
+set_old(old) = (global OLD = old)
+set_sep(sep) = (global SEP = sep)
 
 struct Lineage
 	row::Int
@@ -35,9 +43,9 @@ function med_wmuab(wmuab; w_as=:median)
 	w, m, u, a, b = num_or_nothing.(wmuab)
 	w_as == :median ? isnothing(m) && (m = w) : 
 	w_as == :mean   ? isnothing(u) && (u = w) : error("Illegal `w_as` value!")
-	isa(a, Number) || (a = NOW)
-	isa(b, Number) || (b = OLD)
-	a == b && (a -= SEP; b += SEP)
+	isa(a, Number) || (a = get_now())
+	isa(b, Number) || (b = get_old())
+	a == b && (a -= get_sep(); b += get_sep())
 	return maxendist(a, b; median=m, mean=u)
 end
 
@@ -66,7 +74,7 @@ read_lineages_from_xlsx(filename, sheet="Sheet1",
 
 function get_age_distribution(lineage, group=:crown, h=1.0)
 	@assert group in [:crown, :stem]
-	return pdf(smooth(getproperty(lineage, group), h)).(TIMES)
+	return pdf(smooth(getproperty(lineage, group), h)).(get_times())
 end
 
 add_up_age_distributions(lineages, group=:crown, h=1.0) = 
@@ -80,7 +88,7 @@ function get_change_points(ages; method=:PELT, sigma=1.5)
 	elseif method == :BS
 		xps, _ = BS(cost_function, length(ages))
 	end
-	return TIMES[xps[2:end]] .+ SEP/2
+	return get_times(xps[2:end]) .+ SEP/2
 end
 
 function tlcc(ts1, ts2, shifts=-100:100)
@@ -94,11 +102,11 @@ end
 
 function get_extremum_points(ts; rtol=0.0)
 	extrema_points = Tuple{Float64, Float64, Char}[]
-	for i = reverse(eachindex(TIMES))[begin+1:end-1]
+	for i = reverse(eachindex(get_times()))[begin+1:end-1]
 		ts[i-1] < ts[i] * (1-rtol) && ts[i] * (1+rtol) > ts[i+1] && 
-			push!(extrema_points, (TIMES[i], ts[i], '^'))
+			push!(extrema_points, (get_times(i), ts[i], '^'))
 		ts[i-1] > ts[i] * (1+rtol) && ts[i] * (1-rtol) < ts[i+1] && 
-			push!(extrema_points, (TIMES[i], ts[i], 'v'))
+			push!(extrema_points, (get_times(i), ts[i], 'v'))
 	end
 	return extrema_points
 end

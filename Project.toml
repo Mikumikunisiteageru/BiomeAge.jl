@@ -1,7 +1,7 @@
 name = "BiomeAge"
 uuid = "db8c9f57-3a98-4d81-b667-635f9899ba20"
 authors = ["Yu-Chang YANG <yang.yc.allium@gmail.com>"]
-version = "0.1.0"
+version = "0.2.0"
 
 [deps]
 Changepoints = "98700a41-f20d-59c7-9e81-44d0470ae598"

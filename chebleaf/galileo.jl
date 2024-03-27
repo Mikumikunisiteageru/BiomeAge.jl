@@ -52,7 +52,7 @@ crown_color = "#469825"
 ax2 = PyPlot.axes([103/4100, 0.69, 0.83 - 103/4100, 0.24])
 crowns = sum(crown_ages)
 xps = get_change_points(crowns)
-ax2.plot(TIMES, crowns; c=crown_color)
+ax2.plot(get_times(), crowns; c=crown_color)
 d, u = 0, 3
 ax2.set_ylim([d, u])
 hd1 = hd2 = nothing
@@ -63,7 +63,7 @@ for xp = xps
 	hd2, = ax2.plot([xp, xp], [d, u], "-.k"; lw=0.8, zorder=-10)
 end
 x = xps[2]
-i = searchsorted(TIMES, x)
+i = searchsorted(get_times(), x)
 y = 2 \ (crowns[i.start] + crowns[i.stop])
 hd3, = ax2.plot(x, y, "*"; 
 	c=crown_color, ms=12, markerfacecolor="w", linewidth=1.0)
@@ -93,20 +93,20 @@ for (i, crown_age) = enumerate(crown_ages)
 	t = findlast(crown_age .>= EPSILON)
 	if i <= (n+1) >> 1
 		y = i * STRETCH
-		ax3.fill_between(TIMES[s:t], y .+ crown_age[s:t], y .- crown_age[s:t], 
+		ax3.fill_between(get_times(s:t), y .+ crown_age[s:t], y .- crown_age[s:t], 
 			lw=0, fc=COLOR_RIN, alpha=0.75, zorder=-10)
-		ax3.plot([NOW, TIMES[s]], [y, y], "--", c="k", lw=0.4, zorder=-10)
+		ax3.plot([get_now(), get_times(s)], [y, y], "--", c="k", lw=0.4, zorder=-10)
 		ax3.text(SUBNOW - TEXTSEP, y, print_name(lineages[i].name, :left), 
 			ha="left", va="center", fontsize=8)
 	else
 		y = (i - n/2) * STRETCH
-		ax3.fill_between(TIMES[s:t], y .+ crown_age[s:t], y .- crown_age[s:t], 
+		ax3.fill_between(get_times(s:t), y .+ crown_age[s:t], y .- crown_age[s:t], 
 			lw=0, fc=COLOR_LEN, alpha=0.75, zorder=-10)
-		ax3.plot([TIMES[t], OLD], [y, y], "--", c="k", lw=0.4, zorder=-10)
+		ax3.plot([get_times(t), get_old()], [y, y], "--", c="k", lw=0.4, zorder=-10)
 		ax3.text(SUBOLD + TEXTSEP, y, print_name(lineages[i].name, :right), 
 			ha="right", va="center", fontsize=8)
 	end
-	ax3.fill_between(TIMES[s:t], y .+ crown_age[s:t], y .- crown_age[s:t], 
+	ax3.fill_between(get_times(s:t), y .+ crown_age[s:t], y .- crown_age[s:t], 
 		lw=0.4, ec="k", fc="none", alpha=1, zorder=-1)
 	ax3.plot(mean(lineages[i].crown), y, ".", c="k", ms=3)
 end
@@ -120,13 +120,13 @@ stem_color = "#a1752c"
 ax4 = PyPlot.axes([0.05, 0.76, 0.42, 0.155])
 stems = sum(stem_ages)
 xps = get_change_points(stems)
-ax4.plot(TIMES, stems; c=stem_color)
+ax4.plot(get_times(), stems; c=stem_color)
 d, u = 0, 2.2
 for xp = xps
 	ax4.plot([xp, xp], [d, u], "-.k"; lw=0.8, zorder=-10)
 end
 x = xps[1]
-i = searchsorted(TIMES, x)
+i = searchsorted(get_times(), x)
 y = 2 \ (stems[i.start] + stems[i.stop])
 ax4.set_xlim([120, 0])
 ax4.tick_params(axis="x", pad=2, labelsize=8, length=2)

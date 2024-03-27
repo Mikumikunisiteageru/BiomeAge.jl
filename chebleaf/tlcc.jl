@@ -10,7 +10,7 @@ cd(joinpath(pkgdir(BiomeAge), "chebleaf"))
 
 environments = readdlm("environments.tsv", '\t')
 times, temps, precs, _, _ = collect.(eachcol(environments))
-n = only(findall(isapprox.(maximum(times), TIMES)))
+n = only(findall(isapprox.(maximum(times), get_times())))
 
 lineages = read_lineages_from_tsv("lineages.tsv")
 crowns = add_up_age_distributions(lineages, :crown, 1.0)[1:n]
