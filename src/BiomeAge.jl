@@ -8,26 +8,29 @@ using Entropics
 using Statistics
 using XLSX
 
+export get_now, get_old, get_sep, get_times
+# export set_now, set_old, set_sep
+
 export read_lineages_from_tsv, read_lineages_from_xlsx
 export get_age_distribution, add_up_age_distributions
 export get_change_points
 export tlcc
 export get_extremum_points
 
-export get_now, get_old, get_sep, get_times
-# export set_now, set_old, set_sep
-
 NOW::Float64 = 0
-OLD::Float64 = 120
-SEP::Float64 = 0.1
 get_now() = NOW
+set_now(now) = (global NOW = now)
+
+OLD::Float64 = 120
 get_old() = OLD
+set_old(old) = (global OLD = old)
+
+SEP::Float64 = 0.1
 get_sep() = SEP
+set_sep(sep) = (global SEP = sep)
+
 get_times() = NOW : SEP : OLD
 get_times(id) = get_times()[id]
-set_now(now) = (global NOW = now)
-set_old(old) = (global OLD = old)
-set_sep(sep) = (global SEP = sep)
 
 struct Lineage
 	row::Int
