@@ -36,5 +36,5 @@ jobs:
         with:
           file: lcov.info
           fail_ci_if_error: false
-		  token: ${{ secrets.CODECOV_TOKEN }}
-		  slug: Mikumikunisiteageru/BiomeAge.jl
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: Mikumikunisiteageru/BiomeAge.jl
