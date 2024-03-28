@@ -24,14 +24,14 @@ jobs:
         arch:
           - x64
     steps:
-      - name: Install Entropics.jl
-        run: julia -e "import Pkg; Pkg.add(url=\"https://github.com/Mikumikunisiteageru/Entropics.jl\")"
-        shell: bash
       - uses: actions/checkout@v2
       - uses: julia-actions/setup-julia@v1
         with:
           version: ${{ matrix.version }}
           arch: ${{ matrix.arch }}
+      - name: Install Entropics.jl
+        run: julia -e "import Pkg; Pkg.add(url=\"https://github.com/Mikumikunisiteageru/Entropics.jl\")"
+        shell: bash
       - uses: julia-actions/julia-buildpkg@latest
       - uses: julia-actions/julia-runtest@latest
       - uses: julia-actions/julia-processcoverage@v1
