@@ -24,7 +24,8 @@ julia = "1"
 
 [extras]
 Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
+Entropics = "14a948c2-867d-4473-9685-8fa9f340b513"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [targets]
-test = ["Aqua", "Test"]
+test = ["Aqua", "Test", "Entropics"]

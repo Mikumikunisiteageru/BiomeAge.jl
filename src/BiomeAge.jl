@@ -29,7 +29,7 @@ SEP::Float64 = 0.1
 get_sep() = SEP
 set_sep(sep) = (global SEP = sep)
 
-get_times() = NOW : SEP : OLD
+get_times() = get_now() : get_sep() : get_old()
 get_times(id) = get_times()[id]
 
 struct Lineage
@@ -70,8 +70,8 @@ function read_lineages_from_tsv(filename;
 		1 : size(table, 1), name_col, stem_cols, crown_cols)
 end
 
-read_lineages_from_xlsx(filename, sheet="Sheet1", 
-	rows=2:68, name_col=1, stem_cols=3:7, crown_cols=8:12) = 
+read_lineages_from_xlsx(filename; sheet="Sheet1", 
+	rows=2:73, name_col=1, stem_cols=3:7, crown_cols=8:12) = 
 		read_lineages_from_table(XLSX.readxlsx(filename)[sheet][:], 
 			rows, name_col, stem_cols, crown_cols)
 
@@ -85,33 +85,33 @@ add_up_age_distributions(lineages, group=:crown, h=1.0) =
 
 function get_change_points(ages; method=:PELT, sigma=1.5)
 	@assert method in [:PELT, :BS]
+	cost_function = NormalMeanSegment(ages, sigma)
 	if method == :PELT
-		cost_function = NormalMeanSegment(ages, sigma)
 		xps, _ = PELT(cost_function, length(ages))
 	elseif method == :BS
 		xps, _ = BS(cost_function, length(ages))
 	end
-	return get_times(xps[2:end]) .+ SEP/2
+	return get_times(xps[2:end]) .+ get_sep()/2
 end
 
 function tlcc(ts1, ts2, shifts=-100:100)
 	p(s) = max(s, 0) # positive part
 	n(s) = min(s, 0) # negative part
 	@assert (l = length(ts1)) == length(ts2)
-	timelags = shifts .* SEP
+	timelags = shifts .* get_sep()
 	pearsons = [cor(ts1[1+p(s):l+n(s)], ts2[1-n(s):l-p(s)]) for s = shifts]
 	return timelags, pearsons
 end
 
 function get_extremum_points(ts; rtol=0.0)
-	extrema_points = Tuple{Float64, Float64, Char}[]
+	extremum_points = Tuple{Float64, Float64, Char}[]
 	for i = reverse(eachindex(get_times()))[begin+1:end-1]
 		ts[i-1] < ts[i] * (1-rtol) && ts[i] * (1+rtol) > ts[i+1] && 
-			push!(extrema_points, (get_times(i), ts[i], '^'))
+			push!(extremum_points, (get_times(i), ts[i], '^'))
 		ts[i-1] > ts[i] * (1+rtol) && ts[i] * (1-rtol) < ts[i+1] && 
-			push!(extrema_points, (get_times(i), ts[i], 'v'))
+			push!(extremum_points, (get_times(i), ts[i], 'v'))
 	end
-	return extrema_points
+	return extremum_points
 end
 
 end # module BiomeAge
